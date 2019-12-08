@@ -1,10 +1,8 @@
-package com.tasks.data.domain.interactor.tasks;
+package com.tasks.domain.interactor.tasks;
 
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.repository.TasksRepository;
 import com.tasks.domain.interactor.NonResultUseCase;
-
-import io.reactivex.Completable;
 
 /**
  * Author: murphy

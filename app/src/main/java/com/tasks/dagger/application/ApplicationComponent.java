@@ -2,8 +2,8 @@ package com.tasks.dagger.application;
 
 import com.tasks.MainViewModel;
 import com.tasks.dagger.application.module.ApplicationModule;
+import com.tasks.dagger.usecase.UseCaseModule;
 import com.tasks.data.dagger.DataModule;
-import com.tasks.data.dagger.UseCaseModule;
 import com.tasks.tasks.viewmodel.TasksViewModel;
 
 import javax.inject.Singleton;

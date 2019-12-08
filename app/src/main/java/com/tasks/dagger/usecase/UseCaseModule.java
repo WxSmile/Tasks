@@ -1,10 +1,10 @@
-package com.tasks.data.dagger;
+package com.tasks.dagger.usecase;
 
-import com.tasks.data.domain.interactor.tasks.AddTaskUseCase;
-import com.tasks.data.domain.interactor.tasks.GetCategoryTasksUseCase;
-import com.tasks.data.domain.interactor.tasks.GetHotTasksUseCase;
-import com.tasks.data.domain.interactor.tasks.UpdateTaskUseCase;
 import com.tasks.data.repository.TasksRepository;
+import com.tasks.domain.interactor.tasks.AddTaskUseCase;
+import com.tasks.domain.interactor.tasks.GetCategoryTasksUseCase;
+import com.tasks.domain.interactor.tasks.GetHotTasksUseCase;
+import com.tasks.domain.interactor.tasks.UpdateTaskUseCase;
 
 import dagger.Module;
 import dagger.Provides;

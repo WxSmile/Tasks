@@ -1,4 +1,4 @@
-package com.tasks.data.domain.interactor.tasks;
+package com.tasks.domain.interactor.tasks;
 
 import androidx.lifecycle.LiveData;
 
