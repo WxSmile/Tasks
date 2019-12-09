@@ -26,6 +26,16 @@ public class TestUtils {
         return taskEntity;
     }
 
+    public static TaskEntity createStatusTask(String category, boolean completed) {
+        TaskEntity taskEntity = new TaskEntity();
+        Calendar instance = Calendar.getInstance();
+        instance.set(Calendar.YEAR, 1999);
+        Date date = instance.getTime();
+        int random = new Random().nextInt();
+        taskEntity.setTask(new Task("normal_task" + random, "normal", category, date, completed));
+        return taskEntity;
+    }
+
     public static TaskEntity createHotTask(String category) {
         TaskEntity taskEntity = new TaskEntity();
         Calendar instance = Calendar.getInstance();

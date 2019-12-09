@@ -1,16 +1,13 @@
 package com.tasks.data.source.local.room.dao;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import androidx.room.Update;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
@@ -30,11 +27,8 @@ public abstract class TaskDao {
 
     @Transaction
     public void insertTaskTransaction(CategoryEntity category, TaskEntity taskEntity) {
-        Log.d("Test","--- insert page start");
         insertCategory(category);
         insertTask(taskEntity);
-        Log.d("Test","--- insert page end");
-
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -58,4 +52,7 @@ public abstract class TaskDao {
     @Query("SELECT name, describe, category, date, completed FROM Tasks WHERE date - :current < 86400000 AND date - :current > 0")
     public abstract LiveData<List<TaskModel>> getHotTasks(Date current);
 
+    @Query("SELECT category, count(*) AS total, sum(case completed when 1 then 1 else 0 end) AS completedCount, " +
+                            "sum(case completed when 0 then 1 else 0 end) AS notCompletedCount from tasks group by category")
+    public abstract LiveData<List<CategoryModel>> getAllCategoryStatus();
 }

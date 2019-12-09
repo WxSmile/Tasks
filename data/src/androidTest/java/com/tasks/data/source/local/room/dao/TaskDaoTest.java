@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.TasksDatabase;
 import com.tasks.data.source.local.room.converter.Converter;
@@ -19,6 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -59,10 +61,12 @@ public class TaskDaoTest {
         Context context = ApplicationProvider.getApplicationContext();
         database = Room.inMemoryDatabaseBuilder(context, TasksDatabase.class).build();
         taskDao = database.getTaskDao();
-
         taskDao.insertCategory(TEST_CATEGORY1);
         taskDao.insertCategory(TEST_CATEGORY2);
         taskDao.insertCategory(TEST_CATEGORY3);
+    }
+
+    private void initTask() {
 
         taskDao.insertTask(TEST_TASK1);
         taskDao.insertTask(TEST_TASK2);
@@ -77,6 +81,7 @@ public class TaskDaoTest {
 
     @Test
     public void insertTaskTransaction() throws Exception {
+        initTask();
 
         LiveData<List<TaskModel>> allTasks = taskDao.getAllTasks();
         LiveData<List<TaskModel>> workTasks = taskDao.getCategoryTasks("Transaction");
@@ -92,6 +97,8 @@ public class TaskDaoTest {
 
     @Test
     public void insertTask() throws Exception {
+        initTask();
+
         LiveData<List<TaskModel>> allTasks = taskDao.getAllTasks();
         int sizeBefore = getValue(allTasks).size();
 
@@ -109,6 +116,8 @@ public class TaskDaoTest {
 
     @Test
     public void getCategoryTasks() throws Exception {
+        initTask();
+
         LiveData<List<TaskModel>> otherTasks = taskDao.getCategoryTasks("other");
         List<TaskModel> value = getValue(otherTasks);
 
@@ -121,7 +130,9 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void deleteTask() throws Exception{
+    public void deleteTask() throws Exception {
+        initTask();
+
         LiveData<List<TaskModel>> liveData = taskDao.getAllTasks();
         List<TaskModel> allTasks = getValue(liveData);
 
@@ -140,6 +151,8 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskCompleted() throws Exception {
+        initTask();
+
         LiveData<List<TaskModel>> allTasks = taskDao.getAllTasks();
 
         List<TaskModel> value = getValue(allTasks);
@@ -156,6 +169,8 @@ public class TaskDaoTest {
 
     @Test
     public void getHotTasks() throws Exception {
+        initTask();
+
         taskDao.insertTaskTransaction(TEST_CATEGORY4, TEST_TASK6);
         taskDao.insertTaskTransaction(TEST_CATEGORY4, TEST_TASK7);
         taskDao.insertTaskTransaction(TEST_CATEGORY4, TEST_TASK8);
@@ -174,6 +189,45 @@ public class TaskDaoTest {
         }
 
         assertThat(value).hasSize(2);
+    }
 
+    @Test
+    public void getAllCategoryStatus() throws Exception {
+        LiveData<List<CategoryModel>> allCategoryStatus = taskDao.getAllCategoryStatus();
+
+        List<TaskEntity> unCompletedTasks = new ArrayList<>();
+        List<TaskEntity> completedTasks = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            unCompletedTasks.add(TestUtils.createStatusTask("work", false));
+            unCompletedTasks.add(TestUtils.createStatusTask("home", false));
+            unCompletedTasks.add(TestUtils.createStatusTask("other", false));
+        }
+        for (int i = 0; i < 3; i++) {
+            completedTasks.add(TestUtils.createStatusTask("work", true));
+            completedTasks.add(TestUtils.createStatusTask("home", true));
+            completedTasks.add(TestUtils.createStatusTask("other", true));
+        }
+
+        for (TaskEntity unCompletedTask : unCompletedTasks) {
+            taskDao.insertTask(unCompletedTask);
+        }
+
+        for (TaskEntity completedTask : completedTasks) {
+            taskDao.insertTask(completedTask);
+        }
+
+
+        List<CategoryModel> value = getValue(allCategoryStatus);
+
+        assertThat(value).hasSize(3);
+
+        for (CategoryModel categoryModel : value) {
+            if ("work".equals(categoryModel.getCategory())) {
+                assertThat(categoryModel.getTotal()).isEqualTo(7);
+                assertThat(categoryModel.getCompletedCount()).isEqualTo(3);
+                assertThat(categoryModel.getNotCompletedCount()).isEqualTo(4);
+                break;
+            }
+        }
     }
 }

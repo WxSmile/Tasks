@@ -11,6 +11,6 @@ public class TasksViewModel extends DaggerViewModel {
 
     @Override
     protected void inject(ApplicationComponent applicationComponent) {
-
+        applicationComponent.inject(this);
     }
 }
