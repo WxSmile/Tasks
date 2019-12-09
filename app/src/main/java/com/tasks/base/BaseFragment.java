@@ -3,23 +3,16 @@ package com.tasks.base;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-
-import com.tasks.dagger.fragment.DaggerFragment;
-import com.tasks.dagger.fragment.FragmentComponent;
+import androidx.fragment.app.Fragment;
 
 /**
  * Author: murphy
  * Description: base abstract fragment
  */
-public abstract class BaseFragment extends DaggerFragment {
+public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void inject(FragmentComponent fragmentComponent) {
-
     }
 }

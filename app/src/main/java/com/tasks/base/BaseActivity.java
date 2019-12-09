@@ -4,8 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.tasks.dagger.activity.ActivityComponent;
-import com.tasks.dagger.activity.DaggerActivity;
+import com.tasks.dagger.base.DaggerActivity;
 
 /**
  * Author: murphy
@@ -18,8 +17,4 @@ public abstract class BaseActivity extends DaggerActivity {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    protected void inject(ActivityComponent activityComponent) {
-
-    }
 }

@@ -29,7 +29,7 @@ public class TestUtils {
     public static TaskEntity createStatusTask(String category, boolean completed) {
         TaskEntity taskEntity = new TaskEntity();
         Calendar instance = Calendar.getInstance();
-        instance.set(Calendar.YEAR, 1999);
+        instance.add(Calendar.HOUR, 1);
         Date date = instance.getTime();
         int random = new Random().nextInt();
         taskEntity.setTask(new Task("normal_task" + random, "normal", category, date, completed));

@@ -1,12 +1,16 @@
 package com.tasks.taskdetail;
 
-import com.tasks.dagger.application.ApplicationComponent;
-import com.tasks.dagger.viewmodel.DaggerViewModel;
+import androidx.annotation.NonNull;
+
+import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks.data.repository.TasksRepository;
 
 public class TaskDetailViewModel extends DaggerViewModel {
 
-    @Override
-    protected void inject(ApplicationComponent applicationComponent) {
-        applicationComponent.inject(this);
+    private TasksRepository repository;
+
+    public TaskDetailViewModel(@NonNull TasksRepository repository) {
+        super(repository);
+        this.repository = repository;
     }
 }

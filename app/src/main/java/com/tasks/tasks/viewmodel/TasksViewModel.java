@@ -1,7 +1,17 @@
 package com.tasks.tasks.viewmodel;
 
-import com.tasks.dagger.application.ApplicationComponent;
-import com.tasks.dagger.viewmodel.DaggerViewModel;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks.data.model.CategoryStatusModel;
+import com.tasks.data.model.TaskModel;
+import com.tasks.data.repository.TasksRepository;
+
+import java.util.List;
+
+import io.reactivex.Completable;
 
 /**
  * Author: murphy
@@ -9,8 +19,18 @@ import com.tasks.dagger.viewmodel.DaggerViewModel;
  */
 public class TasksViewModel extends DaggerViewModel {
 
-    @Override
-    protected void inject(ApplicationComponent applicationComponent) {
-        applicationComponent.inject(this);
+    private LiveData<List<CategoryStatusModel>> allCategoryStatus = new MutableLiveData<>();
+    private LiveData<List<TaskModel>> hotTasks = new MutableLiveData<>();
+    private Completable addTaskCompletable;
+
+    private TasksRepository repository;
+
+    public TasksViewModel(@NonNull TasksRepository repository) {
+        super(repository);
+        this.repository = repository;
+    }
+
+    public TasksRepository getRepository() {
+        return repository;
     }
 }

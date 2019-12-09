@@ -2,11 +2,13 @@ package com.tasks.data.source;
 
 import androidx.lifecycle.LiveData;
 
+import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 
@@ -22,7 +24,9 @@ public interface TasksDataSource {
 
     LiveData<List<TaskModel>> getHotTasks();
 
-    LiveData<List<TaskModel>> getCategoryTasks(String category);
+    LiveData<Map<String, List<TaskModel>>> getCategoryTasks(String category);
 
     Completable addCategory(CategoryEntity categoryEntity);
+
+    LiveData<List<CategoryStatusModel>> getAllCategoryStatus();
 }

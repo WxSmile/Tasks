@@ -2,6 +2,7 @@ package com.tasks.data.repository;
 
 import androidx.lifecycle.LiveData;
 
+import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.TasksDataSource;
 import com.tasks.data.source.local.room.table.CategoryEntity;
@@ -10,6 +11,7 @@ import com.tasks.domain.model.Category;
 import com.tasks.domain.model.Task;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 
@@ -38,7 +40,7 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public LiveData<List<TaskModel>> getCategoryTasks(String category) {
+    public LiveData<Map<String, List<TaskModel>>> getCategoryTasks(String category) {
         return localDataSource.getCategoryTasks(category);
     }
 
@@ -50,6 +52,11 @@ public class TasksRepositoryImpl implements TasksRepository {
     @Override
     public Completable updateTask(String taskName, boolean completed) {
         return localDataSource.updateTask(taskName, completed);
+    }
+
+    @Override
+    public LiveData<List<CategoryStatusModel>> getAllCategoryStatus() {
+        return localDataSource.getAllCategoryStatus();
     }
 
     private TaskEntity adapt2TaskEntity(TaskModel taskModel) {

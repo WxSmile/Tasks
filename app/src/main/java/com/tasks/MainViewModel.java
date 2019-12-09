@@ -1,17 +1,9 @@
 package com.tasks;
 
-import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
 
-import com.tasks.dagger.application.ApplicationComponent;
-import com.tasks.dagger.viewmodel.DaggerViewModel;
-import com.tasks.data.model.TaskModel;
-import com.tasks.domain.interactor.Parameter;
-import com.tasks.domain.interactor.tasks.AddTaskUseCase;
-import com.tasks.domain.interactor.tasks.GetHotTasksUseCase;
-
-import java.util.List;
-
-import javax.inject.Inject;
+import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks.data.repository.TasksRepository;
 
 /**
  * Author: murphy
@@ -19,20 +11,10 @@ import javax.inject.Inject;
  */
 public class MainViewModel extends DaggerViewModel {
 
-    @Inject
-    GetHotTasksUseCase getHotTasksUseCase;
-    @Inject
-    AddTaskUseCase addTaskUseCase;
+    private TasksRepository repository;
 
-    private LiveData<List<TaskModel>> hotTasks;
-
-    @Override
-    protected void inject(ApplicationComponent applicationComponent) {
-        applicationComponent.inject(this);
-    }
-
-    LiveData<List<TaskModel>> getHotTasks() {
-        hotTasks = getHotTasksUseCase.execute(Parameter.returnVoid());
-        return hotTasks;
+    public MainViewModel(@NonNull TasksRepository repository) {
+        super(repository);
+        this.repository = repository;
     }
 }
