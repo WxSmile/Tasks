@@ -10,7 +10,9 @@ import io.reactivex.Completable;
 
 public interface TasksRepository {
 
-    void addTask(TaskModel task);
+    Completable addCategory(String category);
+
+    Completable addTask(TaskModel task);
 
     LiveData<List<TaskModel>> getCategoryTasks(String category);
 

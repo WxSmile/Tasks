@@ -1,13 +1,15 @@
 package com.tasks.data.source.local.room.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
 import com.tasks.data.model.CategoryModel;
+import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
@@ -25,17 +27,11 @@ import io.reactivex.Completable;
 @Dao
 public abstract class TaskDao {
 
-    @Transaction
-    public void insertTaskTransaction(CategoryEntity category, TaskEntity taskEntity) {
-        insertCategory(category);
-        insertTask(taskEntity);
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract Completable insertCategory(CategoryEntity category);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertCategory(CategoryEntity category);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertTask(TaskEntity task);
+    public abstract Completable insertTask(TaskEntity task);
 
     @Query("SELECT name, describe, category, date, completed FROM Tasks")
     public abstract LiveData<List<TaskModel>> getAllTasks();
@@ -54,5 +50,8 @@ public abstract class TaskDao {
 
     @Query("SELECT category, count(*) AS total, sum(case completed when 1 then 1 else 0 end) AS completedCount, " +
                             "sum(case completed when 0 then 1 else 0 end) AS notCompletedCount from tasks group by category")
-    public abstract LiveData<List<CategoryModel>> getAllCategoryStatus();
+    public abstract LiveData<List<CategoryStatusModel>> getAllCategoryStatus();
+
+    @Query("SELECT category_name AS category FROM CATEGORIES GROUP BY category_name")
+    public abstract LiveData<List<CategoryModel>> getAllCategories();
 }

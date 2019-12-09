@@ -18,7 +18,8 @@ import io.reactivex.Completable;
 public class RemoteTasksDataSource implements TasksDataSource {
 
     @Override
-    public void addTask(TaskEntity task, CategoryEntity categoryEntity) {
+    public Completable addTask(TaskEntity task) {
+        return null;
     }
 
     @Override
@@ -32,6 +33,11 @@ public class RemoteTasksDataSource implements TasksDataSource {
 
     @Override
     public LiveData<List<TaskModel>> getCategoryTasks(String category) {
+        return null;
+    }
+
+    @Override
+    public Completable addCategory(CategoryEntity categoryEntity) {
         return null;
     }
 

@@ -16,11 +16,13 @@ import io.reactivex.Completable;
  */
 public interface TasksDataSource {
 
-    void addTask(TaskEntity task, CategoryEntity categoryEntity);
+    Completable addTask(TaskEntity task);
 
     Completable updateTask(String taskName, boolean completed);
 
     LiveData<List<TaskModel>> getHotTasks();
 
     LiveData<List<TaskModel>> getCategoryTasks(String category);
+
+    Completable addCategory(CategoryEntity categoryEntity);
 }

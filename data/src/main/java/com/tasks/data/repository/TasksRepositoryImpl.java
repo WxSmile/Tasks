@@ -1,6 +1,7 @@
 package com.tasks.data.repository;
 
 import androidx.lifecycle.LiveData;
+
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.TasksDataSource;
 import com.tasks.data.source.local.room.table.CategoryEntity;
@@ -27,8 +28,13 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public void addTask(TaskModel task) {
-        localDataSource.addTask(adapt2TaskEntity(task), adapt2CategoryEntity(task.getCategory()));
+    public Completable addCategory(String category) {
+        return localDataSource.addCategory(adapt2CategoryEntity(category));
+    }
+
+    @Override
+    public Completable addTask(TaskModel task) {
+        return localDataSource.addTask(adapt2TaskEntity(task));
     }
 
     @Override
@@ -54,9 +60,9 @@ public class TasksRepositoryImpl implements TasksRepository {
         return taskEntity;
     }
 
-    private CategoryEntity adapt2CategoryEntity(String categoryName) {
+    private CategoryEntity adapt2CategoryEntity(String category) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCategory(new Category(categoryName));
+        categoryEntity.setCategory(new Category(category));
         return categoryEntity;
     }
 }

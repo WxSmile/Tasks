@@ -50,6 +50,9 @@ public class TasksRepositoryTest {
         tasksRepository = testComponent.makeTaskRepository();
 
         assertThat(tasksRepository).isInstanceOf(TasksRepositoryImpl.class);
+
+        tasksRepository.addCategory("work").test().assertComplete();
+        tasksRepository.addCategory("Normal").test().assertComplete();
     }
 
     @After
@@ -59,7 +62,7 @@ public class TasksRepositoryTest {
 
     @Test
     public void addTask() throws Exception{
-        tasksRepository.addTask(TEST_TASK_MODEL);
+        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
 
         LiveData<List<TaskModel>> getWorkTasks = tasksRepository.getCategoryTasks("work");
         List<TaskModel> value = getValue(getWorkTasks);
@@ -73,9 +76,9 @@ public class TasksRepositoryTest {
 
     @Test
     public void getCategoryTasks() throws Exception {
-        tasksRepository.addTask(TEST_TASK_MODEL);
-        tasksRepository.addTask(TEST_TASK_MODEL2);
-        tasksRepository.addTask(TEST_TASK_MODEL3);
+        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
+        tasksRepository.addTask(TEST_TASK_MODEL2).test().assertComplete();
+        tasksRepository.addTask(TEST_TASK_MODEL3).test().assertComplete();
 
         LiveData<List<TaskModel>> getWorkTasks = tasksRepository.getCategoryTasks("work");
         List<TaskModel> value = getValue(getWorkTasks);
@@ -85,10 +88,10 @@ public class TasksRepositoryTest {
 
     @Test
     public void getHotTasks() throws Exception {
-        tasksRepository.addTask(TEST_TASK_MODEL);
-        tasksRepository.addTask(TEST_TASK_MODEL2);
-        tasksRepository.addTask(TEST_TASK_MODEL3);
-        tasksRepository.addTask(TEST_TASK_MODEL4);
+        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
+        tasksRepository.addTask(TEST_TASK_MODEL2).test().assertComplete();
+        tasksRepository.addTask(TEST_TASK_MODEL3).test().assertComplete();
+        tasksRepository.addTask(TEST_TASK_MODEL4).test().assertComplete();
 
         LiveData<List<TaskModel>> hotTasks = tasksRepository.getHotTasks();
         assertThat(getValue(hotTasks)).hasSize(1);
@@ -96,7 +99,7 @@ public class TasksRepositoryTest {
 
     @Test
     public void updateTask() throws Exception {
-        tasksRepository.addTask(TEST_TASK_MODEL);
+        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
 
         LiveData<List<TaskModel>> categoryTasks = tasksRepository.getCategoryTasks(TEST_TASK_MODEL.getCategory());
 

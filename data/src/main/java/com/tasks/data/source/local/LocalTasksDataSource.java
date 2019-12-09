@@ -7,6 +7,7 @@ import com.tasks.data.source.TasksDataSource;
 import com.tasks.data.source.local.room.dao.TaskDao;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
+import com.tasks.domain.interactor.CompletableUseCase;
 
 import java.util.Calendar;
 import java.util.List;
@@ -26,8 +27,8 @@ public class LocalTasksDataSource implements TasksDataSource {
     }
 
     @Override
-    public void addTask(TaskEntity task, CategoryEntity categoryEntity) {
-        taskDao.insertTaskTransaction(categoryEntity, task);
+    public Completable addTask(TaskEntity task) {
+        return taskDao.insertTask(task);
     }
 
     @Override
@@ -43,5 +44,10 @@ public class LocalTasksDataSource implements TasksDataSource {
     @Override
     public LiveData<List<TaskModel>> getCategoryTasks(String category) {
         return taskDao.getCategoryTasks(category);
+    }
+
+    @Override
+    public Completable addCategory(CategoryEntity categoryEntity) {
+        return taskDao.insertCategory(categoryEntity);
     }
 }
