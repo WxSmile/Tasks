@@ -11,6 +11,7 @@ import com.tasks.data.dagger.DataComponent;
 import com.tasks.data.dagger.module.DataModule;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
+import com.tasks.data.util.DateUtils;
 import com.tasks.data.utils.TestUtils;
 
 import org.junit.After;
@@ -18,8 +19,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +30,6 @@ import static com.tasks.data.utils.LiveDataUtils.getValue;
  * Description:
  */
 public class TasksRepositoryTest {
-
-    private TaskModel TEST_TASK_MODEL = TestUtils.createTaskModel("work");
-    private TaskModel TEST_TASK_MODEL2 = TestUtils.createTaskModel("work");
-    private TaskModel TEST_TASK_MODEL3 = TestUtils.createTaskModel("work");
-    private TaskModel TEST_TASK_MODEL4 = TestUtils.createHotTaskModel("Normal");
-    private TaskModel TEST_TASK_MODEL5 = TestUtils.createHotTaskModel("work");
-    private TaskModel TEST_TASK_MODEL6 = TestUtils.createHotTaskModel("work");
 
     private DataComponent dataComponent;
     private TasksRepository tasksRepository;
@@ -53,8 +45,12 @@ public class TasksRepositoryTest {
 
         assertThat(tasksRepository).isInstanceOf(TasksRepositoryImpl.class);
 
+        tasksRepository.addCategory("home").test().assertComplete();
+        tasksRepository.addCategory("sport").test().assertComplete();
         tasksRepository.addCategory("work").test().assertComplete();
-        tasksRepository.addCategory("Normal").test().assertComplete();
+
+        insertTask();
+
     }
 
     @After
@@ -62,66 +58,52 @@ public class TasksRepositoryTest {
         dataComponent.makeTestTasksDatabase().close();
     }
 
-    @Test
-    public void addTask() throws Exception{
-        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
+    public void insertTask() throws Exception {
+
+        List<TaskModel> taskModels = TestUtils.makeTaskModels();
+        for (TaskModel taskModel : taskModels) {
+            tasksRepository.addTask(taskModel).test().assertComplete();
+        }
     }
 
     @Test
     public void getCategoryTasks() throws Exception {
-        LiveData<Map<String, List<TaskModel>>> workTasksGroupByDate = tasksRepository.getCategoryTasks("work");
+        LiveData<Map<String, List<TaskModel>>> workTasksEvent = tasksRepository.getCategoryTasks("work");
+        Map<String, List<TaskModel>> workTasks = getValue(workTasksEvent);
 
-        tasksRepository.addTask(TEST_TASK_MODEL2).test().assertComplete();
-        tasksRepository.addTask(TEST_TASK_MODEL3).test().assertComplete();
-        tasksRepository.addTask(TEST_TASK_MODEL4).test().assertComplete();
+        String hotDateGroup = DateUtils.getDateFormate(TestUtils.getHotDate());
+        String futureDateGroup = DateUtils.getDateFormate(TestUtils.getFutureDate());
 
-        tasksRepository.addTask(TEST_TASK_MODEL5).test().assertComplete();
-        tasksRepository.addTask(TEST_TASK_MODEL6).test().assertComplete();
+        assertThat(workTasks).containsKey(hotDateGroup);
+        assertThat(workTasks).containsKey(futureDateGroup);
 
-        Map<String, List<TaskModel>> value = getValue(workTasksGroupByDate);
-        int size = value.size();
-        assertThat(size).isAtLeast(1);
+        assertThat(workTasks.get(hotDateGroup)).hasSize(2);
+        assertThat(workTasks.get(futureDateGroup)).hasSize(2);
 
-        int count = 0;
-        for (Map.Entry<String, List<TaskModel>> entry : value.entrySet()) {
-            count += entry.getValue().size();
-        }
-
-        assertThat(count).isEqualTo(2);
     }
 
     @Test
     public void getHotTasks() throws Exception {
+        LiveData<List<TaskModel>> hotTasksEvent = tasksRepository.getHotTasks();
+        List<TaskModel> hotTasks = getValue(hotTasksEvent);
+        assertThat(hotTasks).hasSize(5);
 
-        LiveData<List<TaskModel>> hotTasks = tasksRepository.getHotTasks();
-
-        tasksRepository.addTask(TEST_TASK_MODEL).test().assertComplete();
-        tasksRepository.addTask(TEST_TASK_MODEL2).test().assertComplete();
-        tasksRepository.addTask(TEST_TASK_MODEL4).test().assertComplete();
-
-        assertThat(getValue(hotTasks)).hasSize(1);
+        assertThat(hotTasks.get(0).isCompleted()).isFalse();
     }
 
     @Test
     public void getAllCategoryStatus() throws Exception{
-        TaskModel work = TestUtils.createHotTaskModel("work");
-        TaskModel work1 = TestUtils.createHotTaskModel("work");
-        TaskModel work2 = TestUtils.createHotTaskModel("work");
-        work.setCompleted(true);
-        tasksRepository.addTask(work).test().assertComplete();
-        tasksRepository.addTask(work1).test().assertComplete();
-        tasksRepository.addTask(work2).test().assertComplete();
+        LiveData<List<CategoryStatusModel>> allCategoryStatusEvent = tasksRepository.getAllCategoryStatus();
+        List<CategoryStatusModel> allCategoryStatus = getValue(allCategoryStatusEvent);
 
-        LiveData<List<CategoryStatusModel>> allCategoryStatus = tasksRepository.getAllCategoryStatus();
+        assertThat(allCategoryStatus).hasSize(3);
 
-        List<CategoryStatusModel> value = getValue(allCategoryStatus);
-
-        assertThat(value).hasSize(1);
-
-        CategoryStatusModel categoryStatusModel = value.get(0);
-        assertThat(categoryStatusModel.getTotal()).isEqualTo(3);
-        assertThat(categoryStatusModel.getCompletedCount()).isEqualTo(1);
-        assertThat(categoryStatusModel.getNotCompletedCount()).isEqualTo(2);
-
+        for (CategoryStatusModel categoryStatusModel : allCategoryStatus) {
+            if ("work".equals(categoryStatusModel.getCategory())) {
+                assertThat(categoryStatusModel.getCompletedCount()).isEqualTo(1);
+                assertThat(categoryStatusModel.getNotCompletedCount()).isEqualTo(3);
+                break;
+            }
+        }
     }
 }

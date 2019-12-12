@@ -2,7 +2,6 @@ package com.tasks.tasks.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.tasks.dagger.base.DaggerViewModel;
 import com.tasks.data.model.CategoryStatusModel;
@@ -11,17 +10,14 @@ import com.tasks.data.repository.TasksRepository;
 
 import java.util.List;
 
-import io.reactivex.Completable;
-
 /**
  * Author: murphy
  * Description: getTaskDao fragment view`s Model
  */
 public class TasksViewModel extends DaggerViewModel {
 
-    private LiveData<List<CategoryStatusModel>> allCategoryStatus = new MutableLiveData<>();
-    private LiveData<List<TaskModel>> hotTasks = new MutableLiveData<>();
-    private Completable addTaskCompletable;
+    LiveData<List<CategoryStatusModel>> allCategoryStatusEvent;
+    LiveData<List<TaskModel>> hotTasksEvent;
 
     private TasksRepository repository;
 
@@ -30,7 +26,19 @@ public class TasksViewModel extends DaggerViewModel {
         this.repository = repository;
     }
 
-    public TasksRepository getRepository() {
-        return repository;
+    public void fetchAllCategoryStatus() {
+        allCategoryStatusEvent = repository.getAllCategoryStatus();
+    }
+
+    public void fetchHotTasks() {
+        hotTasksEvent = repository.getHotTasks();
+    }
+
+    public LiveData<List<CategoryStatusModel>> getAllCategoryStatusEvent() {
+        return allCategoryStatusEvent;
+    }
+
+    public LiveData<List<TaskModel>> getHotTasksEvent() {
+        return hotTasksEvent;
     }
 }

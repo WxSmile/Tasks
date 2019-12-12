@@ -28,6 +28,12 @@ public class RemoteTasksDataSource implements TasksDataSource {
     public Completable updateTask(String taskName, boolean completed) {
         return null;
     }
+
+    @Override
+    public Completable deleteTask(String taskName, String describe) {
+        return null;
+    }
+
     @Override
     public LiveData<List<TaskModel>> getHotTasks() {
         return null;
@@ -45,7 +51,17 @@ public class RemoteTasksDataSource implements TasksDataSource {
     }
 
     @Override
+    public Completable addCategory(List<CategoryEntity> categoryEntity) {
+        return null;
+    }
+
+    @Override
     public LiveData<List<CategoryStatusModel>> getAllCategoryStatus() {
+        return null;
+    }
+
+    @Override
+    public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
         return null;
     }
 

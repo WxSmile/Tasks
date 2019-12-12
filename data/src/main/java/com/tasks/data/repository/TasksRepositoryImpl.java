@@ -10,6 +10,7 @@ import com.tasks.data.source.local.room.table.TaskEntity;
 import com.tasks.domain.model.Category;
 import com.tasks.domain.model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,18 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
+    public Completable addCategory(List<String> categories) {
+        return localDataSource.addCategory(adapt2CategoryEntity(categories));
+    }
+
+    @Override
     public Completable addTask(TaskModel task) {
         return localDataSource.addTask(adapt2TaskEntity(task));
+    }
+
+    @Override
+    public Completable deleteTask(String name, String describe) {
+        return localDataSource.deleteTask(name, describe);
     }
 
     @Override
@@ -59,6 +70,11 @@ public class TasksRepositoryImpl implements TasksRepository {
         return localDataSource.getAllCategoryStatus();
     }
 
+    @Override
+    public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
+        return localDataSource.getCategoryStatus(category);
+    }
+
     private TaskEntity adapt2TaskEntity(TaskModel taskModel) {
         TaskEntity taskEntity = new TaskEntity();
         Task task = new Task(taskModel.getName(), taskModel.getDescribe(),
@@ -71,5 +87,16 @@ public class TasksRepositoryImpl implements TasksRepository {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setCategory(new Category(category));
         return categoryEntity;
+    }
+
+    private List<CategoryEntity> adapt2CategoryEntity(List<String> categories) {
+        List<CategoryEntity> categoryEntities = new ArrayList<>();
+        for (String category : categories) {
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setCategory(new Category(category));
+            categoryEntities.add(categoryEntity);
+        }
+
+        return categoryEntities;
     }
 }

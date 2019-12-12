@@ -1,4 +1,4 @@
-package com.tasks;
+package com.tasks.tasks;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;

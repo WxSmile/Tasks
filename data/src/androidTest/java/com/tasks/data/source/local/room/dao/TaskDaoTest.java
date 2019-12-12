@@ -14,9 +14,9 @@ import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.TasksDatabase;
-import com.tasks.data.source.local.room.converter.Converter;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
+import com.tasks.data.util.DateUtils;
 import com.tasks.data.utils.TestUtils;
 
 import org.junit.After;
@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +34,7 @@ import java.util.Map;
 import io.reactivex.Completable;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.tasks.data.util.DateUtils.getTodayZeroClockTime;
 import static com.tasks.data.utils.LiveDataUtils.getValue;
 
 /**
@@ -43,19 +43,6 @@ import static com.tasks.data.utils.LiveDataUtils.getValue;
  */
 public class TaskDaoTest {
 
-    private TaskEntity TEST_TASK1 = TestUtils.createTask("work");
-    private TaskEntity TEST_TASK2 = TestUtils.createTask("home");
-    private TaskEntity TEST_TASK3 = TestUtils.createTask("other");
-    private TaskEntity TEST_TASK4 = TestUtils.createTask("other");
-    private TaskEntity TEST_TASK5 = TestUtils.createHotTask("other");
-    private TaskEntity TEST_TASK6 = TestUtils.createHotTask("Transaction");
-    private TaskEntity TEST_TASK7 = TestUtils.createHotTask("Transaction");
-    private TaskEntity TEST_TASK8 = TestUtils.createNotHotTask("Transaction");
-
-    private CategoryEntity TEST_CATEGORY1 = TestUtils.createCategory("work");
-    private CategoryEntity TEST_CATEGORY2 = TestUtils.createCategory("home");
-    private CategoryEntity TEST_CATEGORY3 = TestUtils.createCategory("other");
-    private CategoryEntity TEST_CATEGORY4 = TestUtils.createCategory("Transaction");
     private TasksDatabase database;
     private TaskDao taskDao;
 
@@ -74,18 +61,10 @@ public class TaskDaoTest {
         database = dataComponent.makeTestTasksDatabase();
         taskDao = database.getTaskDao();
 
-        taskDao.insertCategory(TEST_CATEGORY1).test().assertComplete();
-        taskDao.insertCategory(TEST_CATEGORY2).test().assertComplete();
-        taskDao.insertCategory(TEST_CATEGORY3).test().assertComplete();
-        taskDao.insertCategory(TEST_CATEGORY4).test().assertComplete();
-    }
+        List<CategoryEntity> categoryEntities = TestUtils.makeCategories();
+        taskDao.insertCategories(categoryEntities).test().assertComplete();
 
-    private void initTask() {
-
-        taskDao.insertTask(TEST_TASK1).test().assertComplete();
-        taskDao.insertTask(TEST_TASK2).test().assertComplete();
-        taskDao.insertTask(TEST_TASK3).test().assertComplete();
-        taskDao.insertTask(TEST_TASK4).test().assertComplete();
+        insertTask();
     }
 
     @After
@@ -93,54 +72,31 @@ public class TaskDaoTest {
         database.close();
     }
 
-    @Test
     public void insertTask() throws Exception {
-        initTask();
-
-        LiveData<List<TaskModel>> allTasks = taskDao.getAllTasks();
-        int sizeBefore = getValue(allTasks).size();
-
-        TaskEntity work = TestUtils.createTask("work");
-        taskDao.insertTask(work).test().assertComplete();
-
-        List<TaskModel> value = getValue(allTasks);
-
-        assertThat(value.size()).isEqualTo(sizeBefore + 1);
-
-        TaskModel taskModel = value.get(value.size() - 1);
-
-        assertThat(taskModel.getName()).isEqualTo(work.getTask().name);
+        List<TaskEntity> taskEntities = TestUtils.makeTasks();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDao.insertTask(taskEntity).test().assertComplete();
+        }
+        LiveData<List<TaskModel>> allTasksEvent = taskDao.getAllTasks();
+        List<TaskModel> allTasks = getValue(allTasksEvent);
+        assertThat(allTasks).hasSize(taskEntities.size());
     }
 
     @Test
     public void getCategoryTasks() throws Exception {
-        initTask();
-        taskDao.insertTask(TEST_TASK5).test().assertComplete();
 
-        LiveData<List<TaskModel>> otherTasks = taskDao.getCategoryTasks("other");
-        List<TaskModel> value = getValue(otherTasks);
+        LiveData<List<TaskModel>> workTasksEvent = taskDao.getCategoryTasksAfterOneTimestamp("work", getTodayZeroClockTime());
 
-        assertThat(value).isNotNull();
-        assertThat(value.size()).isEqualTo(3);
+        List<TaskModel> workTasks = getValue(workTasksEvent);
 
-        for (TaskModel taskModel : value) {
-            assertThat(taskModel.getCategory()).isEqualTo("other");
-        }
+        assertThat(workTasks).hasSize(4);
 
-        assertThat(value.get(1).getDate()).isLessThan(value.get(2).getDate());
-
-        LiveData<Map<String, List<TaskModel>>> map = Transformations.map(otherTasks, input -> {
+        LiveData<Map<String, List<TaskModel>>> map = Transformations.map(workTasksEvent, input -> {
             Map<String, List<TaskModel>> tasksGroupByDate = new HashMap<>();
             DateFormat dateFormat = DateFormat.getDateInstance();
 
-            Calendar instance = Calendar.getInstance();
-            long currentTimestamp = instance.getTimeInMillis();
-
             for (TaskModel taskModel : input) {
                 Date date = taskModel.getDate();
-                long timestamp = date.getTime();
-                if (timestamp < currentTimestamp) continue;
-
                 String formatDate = dateFormat.format(date);
                 List<TaskModel> taskModelsGroupByDate = tasksGroupByDate.get(formatDate);
                 if (taskModelsGroupByDate == null) {
@@ -152,28 +108,14 @@ public class TaskDaoTest {
             return tasksGroupByDate;
         });
 
-        assertThat(getValue(map)).hasSize(1);
-    }
-
-    @Test
-    public void getCategoryTaskAfterCurrentTimestamp() throws Exception {
-        initTask();
-        taskDao.insertTask(TEST_TASK5).test().assertComplete();
-
-        LiveData<List<TaskModel>> otherTasks = taskDao.getCategoryTasksAfterOneTimestamp("other", new Date());
-        List<TaskModel> value = getValue(otherTasks);
-
-        assertThat(value).isNotNull();
-
-        assertThat(value).hasSize(1);
+        assertThat(getValue(map)).hasSize(2);
     }
 
     @Test
     public void deleteTask() throws Exception {
-        initTask();
 
-        LiveData<List<TaskModel>> liveData = taskDao.getAllTasks();
-        List<TaskModel> allTasks = getValue(liveData);
+        LiveData<List<TaskModel>> allTasksEvent = taskDao.getAllTasks();
+        List<TaskModel> allTasks = getValue(allTasksEvent);
 
         assertThat(allTasks).isNotNull();
 
@@ -185,92 +127,68 @@ public class TaskDaoTest {
         Completable completable = taskDao.deleteTask(taskModel.getName(), taskModel.getDescribe());
         completable.test().assertComplete();
 
-        assertThat(getValue(liveData).size()).isEqualTo(sizeBefore - 1);
+        assertThat(getValue(allTasksEvent).size()).isEqualTo(sizeBefore - 1);
     }
 
     @Test
     public void updateTaskCompleted() throws Exception {
-        initTask();
 
-        LiveData<List<TaskModel>> allTasks = taskDao.getAllTasks();
+        LiveData<List<TaskModel>> allTasksEvent = taskDao.getAllTasks();
 
-        List<TaskModel> value = getValue(allTasks);
-        assertThat(value.size()).isAtLeast(1);
+        List<TaskModel> allTasks = getValue(allTasksEvent);
+        assertThat(allTasks.size()).isAtLeast(1);
 
-        TaskModel taskModel = value.get(0);
+        TaskModel taskModel = allTasks.get(0);
 
-        assertThat(taskModel.isCompleted()).isFalse();
+        boolean completed = taskModel.isCompleted();
 
-        taskDao.updateTaskStatus(taskModel.getName(), true).test().assertComplete();
+        taskDao.updateTaskStatus(taskModel.getName(), !completed).test().assertComplete();
 
-        assertThat(getValue(allTasks).get(0).isCompleted()).isTrue();
+        assertThat(getValue(allTasksEvent).get(0).isCompleted()).isEqualTo(!completed);
     }
 
     @Test
     public void getHotTasks() throws Exception {
-        initTask();
 
-        taskDao.insertTask(TEST_TASK6).test().assertComplete();
-        taskDao.insertTask(TEST_TASK7).test().assertComplete();
-        taskDao.insertTask(TEST_TASK8).test().assertComplete();
+        Date nextTodayZeroClockTime = DateUtils.getNextTodayZeroClockTime();
+        LiveData<List<TaskModel>> hotTasksEvent = taskDao.getHotTasks(nextTodayZeroClockTime);
+        List<TaskModel> hotTasks = getValue(hotTasksEvent);
 
-        LiveData<List<TaskModel>> hotTasks = taskDao.getHotTasks(Calendar.getInstance().getTime());
-        List<TaskModel> value = getValue(hotTasks);
-        long current = Calendar.getInstance().getTimeInMillis();
+        assertThat(hotTasks).hasSize(5);
 
-        for (TaskModel taskModel : value) {
+        for (TaskModel taskModel : hotTasks) {
             Date date = taskModel.getDate();
-            assertThat(date).isNotNull();
 
-            long timestamp = Converter.dateToTimestamp(date);
-            assertThat(timestamp - current).isAtLeast(0L);
-            assertThat(timestamp - current).isAtMost(86400000L);
+            assertThat(nextTodayZeroClockTime.getTime() - date.getTime()).isAtLeast(0L);
+            assertThat(nextTodayZeroClockTime.getTime() - date.getTime()).isAtMost(86400000L);
+
+            assertThat(taskModel.isCompleted()).isFalse();
         }
 
-        assertThat(value).hasSize(2);
     }
 
     @Test
     public void getAllCategories() throws Exception {
-        LiveData<List<CategoryModel>> allCategories = taskDao.getAllCategories();
-        assertThat(getValue(allCategories)).hasSize(4);
+        LiveData<List<CategoryModel>> allCategoriesEvent = taskDao.getAllCategories();
+        assertThat(getValue(allCategoriesEvent)).hasSize(3);
     }
 
     @Test
     public void getAllCategoryStatus() throws Exception {
-        LiveData<List<CategoryStatusModel>> allCategoryStatus = taskDao.getAllCategoryStatusAfterOneTime(new Date());
+        Date todayZeroClockTime = getTodayZeroClockTime();
+        LiveData<List<CategoryStatusModel>> allCategoryStatusEvent = taskDao.getAllCategoryStatusAfterOneTime(todayZeroClockTime);
+        List<CategoryStatusModel> allCategoryStatus = getValue(allCategoryStatusEvent);
 
-        List<TaskEntity> unCompletedTasks = new ArrayList<>();
-        List<TaskEntity> completedTasks = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            unCompletedTasks.add(TestUtils.createStatusTask("work", false));
-            unCompletedTasks.add(TestUtils.createStatusTask("home", false));
-            unCompletedTasks.add(TestUtils.createStatusTask("other", false));
-        }
-        for (int i = 0; i < 3; i++) {
-            completedTasks.add(TestUtils.createStatusTask("work", true));
-            completedTasks.add(TestUtils.createStatusTask("home", true));
-            completedTasks.add(TestUtils.createStatusTask("other", true));
-        }
+        assertThat(allCategoryStatus).hasSize(3);
 
-        for (TaskEntity unCompletedTask : unCompletedTasks) {
-            taskDao.insertTask(unCompletedTask).test().assertComplete();
-        }
+        //assert when tasks table is empty
+//        CategoryStatusModel categoryStatusModel1 = allCategoryStatus.get(0);
+//        assertThat(categoryStatusModel1.getCompletedCount() + categoryStatusModel1.getNotCompletedCount()).isEqualTo(0);
 
-        for (TaskEntity completedTask : completedTasks) {
-            taskDao.insertTask(completedTask).test().assertComplete();
-        }
-
-
-        List<CategoryStatusModel> value = getValue(allCategoryStatus);
-
-        assertThat(value).hasSize(3);
-
-        for (CategoryStatusModel categoryStatusModel : value) {
+        for (CategoryStatusModel categoryStatusModel : allCategoryStatus) {
             if ("work".equals(categoryStatusModel.getCategory())) {
-                assertThat(categoryStatusModel.getTotal()).isEqualTo(7);
-                assertThat(categoryStatusModel.getCompletedCount()).isEqualTo(3);
-                assertThat(categoryStatusModel.getNotCompletedCount()).isEqualTo(4);
+                assertThat(categoryStatusModel.getCompletedCount()).isEqualTo(1);
+                assertThat(categoryStatusModel.getNotCompletedCount()).isEqualTo(3);
                 break;
             }
         }
@@ -278,28 +196,10 @@ public class TaskDaoTest {
 
     @Test
     public void getCategoryStatus() throws Exception{
-        LiveData<List<CategoryStatusModel>> workTasks = taskDao.getCategoryStatus("work");
-        List<TaskEntity> unCompletedTasks = new ArrayList<>();
-        List<TaskEntity> completedTasks = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            unCompletedTasks.add(TestUtils.createStatusTask("work", false));
-        }
-        for (int i = 0; i < 3; i++) {
-            completedTasks.add(TestUtils.createStatusTask("work", true));
-        }
-
-        for (TaskEntity unCompletedTask : unCompletedTasks) {
-            taskDao.insertTask(unCompletedTask).test().assertComplete();
-        }
-
-        for (TaskEntity completedTask : completedTasks) {
-            taskDao.insertTask(completedTask).test().assertComplete();
-        }
-
-        List<CategoryStatusModel> value = getValue(workTasks);
-        assertThat(value).hasSize(1);
-        assertThat(value.get(0).getTotal()).isEqualTo(7);
-        assertThat(value.get(0).getCompletedCount()).isEqualTo(3);
-        assertThat(value.get(0).getNotCompletedCount()).isEqualTo(4);
+        Date todayZeroClockTime = getTodayZeroClockTime();
+        LiveData<CategoryStatusModel> workTasksEvent = taskDao.getCategoryStatusAfterOneTime("work", todayZeroClockTime);
+        CategoryStatusModel workTaskStatus = getValue(workTasksEvent);
+        assertThat(workTaskStatus.getCompletedCount()).isEqualTo(1);
+        assertThat(workTaskStatus.getNotCompletedCount()).isEqualTo(3);
     }
 }

@@ -9,16 +9,17 @@ import com.tasks.data.source.TasksDataSource;
 import com.tasks.data.source.local.room.dao.TaskDao;
 import com.tasks.data.source.local.room.table.CategoryEntity;
 import com.tasks.data.source.local.room.table.TaskEntity;
+import com.tasks.data.util.DateUtils;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
+
+import static com.tasks.data.util.DateUtils.getDateFormate;
 
 /**
  * Author: murphy
@@ -43,24 +44,28 @@ public class LocalTasksDataSource implements TasksDataSource {
     }
 
     @Override
+    public Completable deleteTask(String taskName, String describe) {
+        return taskDao.deleteTask(taskName, describe);
+    }
+
+    @Override
     public LiveData<List<TaskModel>> getHotTasks() {
-        return taskDao.getHotTasks(Calendar.getInstance().getTime());
+        return taskDao.getHotTasks(DateUtils.getNextTodayZeroClockTime());
     }
 
     @Override
     public LiveData<Map<String, List<TaskModel>>> getCategoryTasks(String category) {
-        LiveData<List<TaskModel>> categoryTasks = taskDao.getCategoryTasksAfterOneTimestamp(category, new Date());
+        Date todayZeroClockTime = DateUtils.getTodayZeroClockTime();
+        LiveData<List<TaskModel>> categoryTasks = taskDao.getCategoryTasksAfterOneTimestamp(category, todayZeroClockTime);
         return Transformations.map(categoryTasks, this::getCategoryTasks);
     }
 
     private Map<String, List<TaskModel>> getCategoryTasks(List<TaskModel> taskModels) {
         Map<String, List<TaskModel>> tasksGroupByDate = new HashMap<>();
-        DateFormat dateFormat = DateFormat.getDateInstance();
-
 
         for (TaskModel taskModel : taskModels) {
             Date date = taskModel.getDate();
-            String formatDate = dateFormat.format(date);
+            String formatDate = getDateFormate(date);
             List<TaskModel> taskModelsGroupByDate = tasksGroupByDate.get(formatDate);
             if (taskModelsGroupByDate == null) {
                 taskModelsGroupByDate = new ArrayList<>();
@@ -78,7 +83,17 @@ public class LocalTasksDataSource implements TasksDataSource {
     }
 
     @Override
+    public Completable addCategory(List<CategoryEntity> categoryEntities) {
+        return taskDao.insertCategories(categoryEntities);
+    }
+
+    @Override
     public LiveData<List<CategoryStatusModel>> getAllCategoryStatus() {
-        return taskDao.getAllCategoryStatusAfterOneTime(new Date());
+        return taskDao.getAllCategoryStatusAfterOneTime(DateUtils.getTodayZeroClockTime());
+    }
+
+    @Override
+    public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
+        return taskDao.getCategoryStatusAfterOneTime(category, DateUtils.getTodayZeroClockTime());
     }
 }

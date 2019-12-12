@@ -22,11 +22,18 @@ public interface TasksDataSource {
 
     Completable updateTask(String taskName, boolean completed);
 
+    Completable deleteTask(String taskName, String describe);
+
     LiveData<List<TaskModel>> getHotTasks();
 
     LiveData<Map<String, List<TaskModel>>> getCategoryTasks(String category);
 
     Completable addCategory(CategoryEntity categoryEntity);
 
+    Completable addCategory(List<CategoryEntity> categoryEntities);
+
     LiveData<List<CategoryStatusModel>> getAllCategoryStatus();
+
+    LiveData<CategoryStatusModel> getCategoryStatus(String category);
+
 }

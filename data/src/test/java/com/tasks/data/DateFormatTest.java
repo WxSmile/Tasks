@@ -21,6 +21,7 @@ public class DateFormatTest {
     public void testDateFormat() {
         DateFormat dateInstance = DateFormat.getDateInstance();
         String format = dateInstance.format(new Date());
-        Truth.assertThat(format).isEqualTo("cc");
+        //xxxx-xx-xx
+        Truth.assertThat(format.length()).isEqualTo(10);
     }
 }

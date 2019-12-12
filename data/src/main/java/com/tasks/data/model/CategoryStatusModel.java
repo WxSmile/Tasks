@@ -8,8 +8,6 @@ public class CategoryStatusModel {
 
     private String category;
 
-    private int total;
-
     private int completedCount;
 
     private int notCompletedCount;
@@ -36,13 +34,5 @@ public class CategoryStatusModel {
 
     public void setNotCompletedCount(int notCompletedCount) {
         this.notCompletedCount = notCompletedCount;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
     }
 }
