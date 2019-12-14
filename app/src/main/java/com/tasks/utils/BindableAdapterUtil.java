@@ -1,6 +1,7 @@
 package com.tasks.utils;
 
 import android.util.Log;
+import android.view.ViewAnimationUtils;
 import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
@@ -8,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.util.DateUtils;
-import com.tasks.tasks.AllCategoryStatusAdapter;
-import com.tasks.tasks.HotTasksAdapter;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -24,32 +23,23 @@ public class BindableAdapterUtil {
     @BindingAdapter("data")
     public static <T> void setRecyclerViewDataSource(RecyclerView recyclerView, List<T> source) {
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
-        if (adapter instanceof HotTasksAdapter) {
-
-            if (source == null) {
-                Log.d("Test", "HotTasksAdapter: null" );
-            }else {
-                Log.d("Test", "HotTasksAdapter: " + source.size() );
-
-            }
+        if (adapter instanceof BindableInterface) {
+            ((BindableInterface) adapter).setData(source);
         }
+    }
 
-        if (adapter instanceof AllCategoryStatusAdapter) {
-            if (source == null) {
-                Log.d("Test", "AllCategoryStatusAdapter: null" );
-            }else {
-                Log.d("Test", "AllCategoryStatusAdapter: " + source.size() );
-
-            }
-        }
-        if (adapter instanceof BindableAdapter) {
-            ((BindableAdapter) adapter).setData(source);
+    @BindingAdapter("viewmodel")
+    public static <T> void setRecyclerViewViewModel(RecyclerView recyclerView, T model) {
+        Log.d("Test", "setRecyclerViewViewModel: ");
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter instanceof BindableInterface) {
+            ((BindableInterface) adapter).setViewModel(model);
         }
     }
 
     @BindingAdapter("android:text")
     public static void setDateToString(TextView textView, Date date) {
-        String dateFormate = DateUtils.getDateFormate(date, DateFormat.getDateInstance());
+        String dateFormate = DateUtils.getDateFormate(date, DateFormat.getDateTimeInstance());
         textView.setText(dateFormate);
     }
 

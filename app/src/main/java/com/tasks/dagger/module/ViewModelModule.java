@@ -11,6 +11,8 @@ import com.tasks.SplashViewModel;
 import com.tasks.dagger.base.TaskViewModelFactory;
 import com.tasks.data.dagger.qualifier.ForRelease;
 import com.tasks.data.repository.TasksRepository;
+import com.tasks.taskadd.AddTaskViewModel;
+import com.tasks.taskdetail.TaskDetailViewModel;
 import com.tasks.tasks.viewmodel.TasksViewModel;
 
 import dagger.Module;
@@ -35,6 +37,16 @@ public class ViewModelModule {
     }
 
     @Provides
+    AddTaskViewModel provideAddTaskViewModel(FragmentActivity activity, Factory factory) {
+        return ViewModelProviders.of(activity, factory).get(AddTaskViewModel.class);
+    }
+
+    @Provides
+    TaskDetailViewModel provideTaskDetailViewModel(FragmentActivity activity, Factory factory) {
+        return ViewModelProviders.of(activity, factory).get(TaskDetailViewModel.class);
+    }
+
+    @Provides
     MainViewModel provideMainViewModel(FragmentActivity activity, Factory factory) {
         return ViewModelProviders.of(activity, factory).get(MainViewModel.class);
     }
@@ -46,7 +58,9 @@ public class ViewModelModule {
 
     public interface Maker extends Injector {
         MainViewModel makeMainViewModel();
+        TaskDetailViewModel makeTaskDetailViewModel();
         TasksViewModel makeTasksViewModel();
+        AddTaskViewModel makeAddTaskViewModel();
         SplashViewModel makeSplashViewModel();
     }
 

@@ -6,10 +6,18 @@
     <data>
 
         <import type="com.tasks.data.model.CategoryStatusModel" />
+        <import type="com.tasks.tasks.viewmodel.TasksViewModel" />
+        <import type="com.tasks.tasks.AllCategoryStatusAdapter.CategoryStatusViewHolder"/>
 
         <variable
             name="model"
             type="CategoryStatusModel" />
+        <variable
+            name="viewModel"
+            type="TasksViewModel" />
+        <variable
+            name="viewHolder"
+            type="CategoryStatusViewHolder" />
     </data>
 
     <FrameLayout
@@ -19,6 +27,8 @@
         android:paddingStart="5dp"
         android:paddingTop="20dp"
         android:paddingEnd="5dp"
+        android:clickable="true"
+        android:focusable="true"
         android:paddingBottom="20dp">
 
         <androidx.cardview.widget.CardView
@@ -28,9 +38,14 @@
             app:cardCornerRadius="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()->viewHolder.onCategoryStatusItemClicked(model)}"
+                android:background="@drawable/bacground_task_item"
                 android:paddingBottom="40dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">

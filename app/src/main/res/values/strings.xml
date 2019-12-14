@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">My Tasks</string>
+    <string name="hot_tasks">Hot tasks</string>
+    <string name="progress">Progress</string>
+    <string name="create_new_task">Create new task</string>
 </resources>

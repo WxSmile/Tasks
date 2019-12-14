@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tasks.data.model.TaskModel;
 import com.tasks.databinding.ItemTaskBinding;
-import com.tasks.utils.BindableAdapter;
+import com.tasks.tasks.viewmodel.TasksViewModel;
+import com.tasks.utils.BindableInterface;
 
 import java.util.List;
 
@@ -17,9 +18,10 @@ import java.util.List;
  * Description:
  */
 public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTaskViewHolder>
-        implements BindableAdapter<TaskModel> {
+        implements BindableInterface<TaskModel, TasksViewModel> {
 
     private List<TaskModel> source;
+    private TasksViewModel viewModel;
 
     @Override
     public void setData(List<TaskModel> source) {
@@ -27,11 +29,17 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
         notifyItemRangeChanged(0, getItemCount());
     }
 
+    @Override
+    public void setViewModel(TasksViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
     @NonNull
     @Override
     public HotTaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         ItemTaskBinding itemTaskBinding = ItemTaskBinding.inflate(layoutInflater, parent, false);
+        itemTaskBinding.setViewModel(viewModel);
         return new HotTaskViewHolder(itemTaskBinding);
     }
 
@@ -46,7 +54,7 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
         return source != null ? source.size() : 0;
     }
 
-    class HotTaskViewHolder extends RecyclerView.ViewHolder {
+    public class HotTaskViewHolder extends RecyclerView.ViewHolder {
 
         private ItemTaskBinding itemTaskBinding;
 
@@ -56,7 +64,22 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
         }
 
         void bind(TaskModel taskModel) {
+            itemTaskBinding.setViewHolder(this);
             itemTaskBinding.setModel(taskModel);
+        }
+
+        public void onHotTaskItemClicked(TaskModel taskModel) {
+            if (taskModel.isCompleted()) return;
+            taskModel.setCompleted(true);
+            int position = source.indexOf(taskModel);
+            notifyItemChanged(position);
+            itemTaskBinding.flRadio.postDelayed(() -> updateTaskModel(taskModel), 500);
+        }
+
+        private void updateTaskModel(TaskModel taskModel) {
+            notifyItemRemoved(source.indexOf(taskModel));
+            source.remove(taskModel);
+            itemTaskBinding.getViewModel().updateTaskModel(taskModel);
         }
     }
 }
