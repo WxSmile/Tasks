@@ -2,6 +2,7 @@ package com.tasks.data.source.remote;
 
 import androidx.lifecycle.LiveData;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.TasksDataSource;
@@ -62,6 +63,11 @@ public class RemoteTasksDataSource implements TasksDataSource {
 
     @Override
     public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
+        return null;
+    }
+
+    @Override
+    public LiveData<List<CategoryModel>> getAllCategories() {
         return null;
     }
 

@@ -3,4 +3,9 @@
     <string name="hot_tasks">Hot tasks</string>
     <string name="progress">Progress</string>
     <string name="create_new_task">Create new task</string>
+    <string name="add_task">+ Add task</string>
+    <string name="choose_list">Choose list</string>
+    <string name="hint_your_task_name">Your task name</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
 </resources>

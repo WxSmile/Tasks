@@ -2,6 +2,7 @@ package com.tasks.data.source;
 
 import androidx.lifecycle.LiveData;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.local.room.table.CategoryEntity;
@@ -35,5 +36,7 @@ public interface TasksDataSource {
     LiveData<List<CategoryStatusModel>> getAllCategoryStatus();
 
     LiveData<CategoryStatusModel> getCategoryStatus(String category);
+
+    LiveData<List<CategoryModel>> getAllCategories();
 
 }

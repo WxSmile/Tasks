@@ -2,6 +2,7 @@ package com.tasks.data.repository;
 
 import androidx.lifecycle.LiveData;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.TasksDataSource;
@@ -73,6 +74,11 @@ public class TasksRepositoryImpl implements TasksRepository {
     @Override
     public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
         return localDataSource.getCategoryStatus(category);
+    }
+
+    @Override
+    public LiveData<List<CategoryModel>> getAllCategories() {
+        return localDataSource.getAllCategories();
     }
 
     private TaskEntity adapt2TaskEntity(TaskModel taskModel) {

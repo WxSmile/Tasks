@@ -62,9 +62,7 @@ public class TasksFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        FragmentActivity activity = getActivity();
-        assert activity != null;
-        tasksViewModel = ViewModelProviders.of(activity).get(TasksViewModel.class);
+        tasksViewModel = ViewModelProviders.of(requireActivity()).get(TasksViewModel.class);
     }
 
     private void onAppBarOffsetChanged(AppBarLayout appBarLayout, int offset) {

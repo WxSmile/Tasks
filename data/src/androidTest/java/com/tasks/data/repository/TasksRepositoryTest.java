@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider;
 import com.tasks.data.dagger.DaggerDataComponent;
 import com.tasks.data.dagger.DataComponent;
 import com.tasks.data.dagger.module.DataModule;
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.util.DateUtils;
@@ -105,5 +106,11 @@ public class TasksRepositoryTest {
                 break;
             }
         }
+    }
+
+    @Test
+    public void getCategories() throws Exception{
+        LiveData<List<CategoryModel>> allCategories = tasksRepository.getAllCategories();
+        assertThat(getValue(allCategories)).hasSize(3);
     }
 }
