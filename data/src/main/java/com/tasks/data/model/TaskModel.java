@@ -14,6 +14,9 @@ public class TaskModel {
     private Date date;
     private boolean completed;
 
+    public TaskModel() {
+    }
+
     public TaskModel(String name, String describe, String category, Date date, boolean completed) {
         this.name = name;
         this.describe = describe;

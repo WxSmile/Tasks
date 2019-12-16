@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.tasks.taskadd.AddTaskViewModel" />
+        <import type="com.tasks.data.util.DateUtils"/>
+
+        <variable
+            name="addTaskModel"
+            type="com.tasks.taskadd.AddTaskViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/create_new_task"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_task_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="@string/hint_your_task_name"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textColorHighlight="@color/colorAccent"
+                android:textCursorDrawable="@drawable/cursor_color_edittext"
+                android:textSelectHandle="@color/colorAccent"
+                android:textSelectHandleLeft="@color/colorAccent"
+                android:textSelectHandleRight="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_label" />
+
+            <TextView
+                android:id="@+id/tv_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/date"
+                android:textColor="#1e1e1e"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_task_name" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="0dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                app:add_task_date="@{addTaskModel.taskDateEvent}"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_date_label"
+                tools:text="03 Nov 2019" />
+
+
+            <TextView
+                android:id="@+id/tv_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="120dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/time"
+                android:textColor="#1e1e1e"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_date_label"
+                app:layout_constraintTop_toBottomOf="@+id/et_task_name" />
+
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="0dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/colorPrimary"
+                app:add_task_time="@{addTaskModel.taskDateEvent}"
+                app:layout_constraintLeft_toLeftOf="@id/tv_time_label"
+                app:layout_constraintTop_toBottomOf="@id/tv_date_label"
+                tools:text="11:00 AM" />
+
+
+            <TextView
+                android:id="@+id/tv_choose_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/choose_list"
+                android:textColor="#1e1e1e"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:data="@{addTaskModel.categoriesEvent}"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_choose_title"
+                app:spanCount="4"
+                app:viewmodel="@{addTaskModel}" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/btn_add_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bacground_btn_add_task"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/add_task"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_content" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

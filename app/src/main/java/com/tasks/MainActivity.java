@@ -44,7 +44,6 @@ public class MainActivity extends BaseActivity implements MainCallback {
         getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, TasksFragment.class.getSimpleName())
                 .addToBackStack(TasksFragment.class.getSimpleName())
                 .commit();
-
     }
 
     public void addTask(View view) {

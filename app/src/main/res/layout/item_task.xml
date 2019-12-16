@@ -6,8 +6,10 @@
     <data>
 
         <import type="com.tasks.data.model.TaskModel" />
-        <import type="com.tasks.tasks.viewmodel.TasksViewModel"/>
-        <import type="com.tasks.tasks.HotTasksAdapter"/>
+
+        <import type="com.tasks.tasks.viewmodel.TasksViewModel" />
+
+        <import type="com.tasks.tasks.HotTasksAdapter" />
 
         <variable
             name="model"
@@ -70,13 +72,28 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{model.date}"
+            android:gravity="center"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
+            android:text="Today at "
             app:layout_constraintBottom_toBottomOf="@+id/fl_radio"
             app:layout_constraintLeft_toLeftOf="@+id/tv_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_name"
-            tools:text="Today at PM 11:00" />
+            tools:text="Today at" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            app:hot_task_time="@{model.date}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+            app:layout_constraintLeft_toRightOf="@+id/tv_date"
+            app:layout_constraintTop_toTopOf="@+id/tv_date"
+            tools:text="PM 11:00" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

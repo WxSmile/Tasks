@@ -3,6 +3,7 @@ package com.tasks.data.source.local;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.source.TasksDataSource;
@@ -95,5 +96,10 @@ public class LocalTasksDataSource implements TasksDataSource {
     @Override
     public LiveData<CategoryStatusModel> getCategoryStatus(String category) {
         return taskDao.getCategoryStatusAfterOneTime(category, DateUtils.getTodayZeroClockTime());
+    }
+
+    @Override
+    public LiveData<List<CategoryModel>> getAllCategories() {
+        return taskDao.getAllCategories();
     }
 }
