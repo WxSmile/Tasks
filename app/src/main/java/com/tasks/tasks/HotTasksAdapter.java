@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tasks._utils.BindableInterface;
 import com.tasks.data.model.TaskModel;
-import com.tasks.databinding.ItemTaskBinding;
+import com.tasks.databinding.ItemHotTaskBinding;
 import com.tasks.tasks.viewmodel.TasksViewModel;
-import com.tasks.utils.BindableInterface;
 
 import java.util.List;
 
@@ -25,8 +25,14 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
 
     @Override
     public void setData(List<TaskModel> source) {
+        int oldItemCount = getItemCount();
         this.source = source;
-        notifyItemRangeChanged(0, getItemCount());
+
+        if (getItemCount() >= oldItemCount) {
+            notifyItemRangeChanged(0, getItemCount());
+        }else {
+            notifyItemRangeRemoved(0, getItemCount());
+        }
     }
 
     @Override
@@ -38,8 +44,7 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
     @Override
     public HotTaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        ItemTaskBinding itemTaskBinding = ItemTaskBinding.inflate(layoutInflater, parent, false);
-        itemTaskBinding.setViewModel(viewModel);
+        ItemHotTaskBinding itemTaskBinding = ItemHotTaskBinding.inflate(layoutInflater, parent, false);
         return new HotTaskViewHolder(itemTaskBinding);
     }
 
@@ -56,9 +61,9 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
 
     public class HotTaskViewHolder extends RecyclerView.ViewHolder {
 
-        private ItemTaskBinding itemTaskBinding;
+        private ItemHotTaskBinding itemTaskBinding;
 
-        HotTaskViewHolder(ItemTaskBinding itemTaskBinding) {
+        HotTaskViewHolder(ItemHotTaskBinding itemTaskBinding) {
             super(itemTaskBinding.getRoot());
             this.itemTaskBinding = itemTaskBinding;
         }
@@ -70,16 +75,18 @@ public class HotTasksAdapter extends RecyclerView.Adapter<HotTasksAdapter.HotTas
 
         public void onHotTaskItemClicked(TaskModel taskModel) {
             if (taskModel.isCompleted()) return;
+
             taskModel.setCompleted(true);
             int position = source.indexOf(taskModel);
             notifyItemChanged(position);
-            itemTaskBinding.flRadio.postDelayed(() -> updateTaskModel(taskModel), 500);
+            itemTaskBinding.rbStatus.postDelayed(this::updateTaskStatusCompleted, 500);
         }
 
-        private void updateTaskModel(TaskModel taskModel) {
+        private void updateTaskStatusCompleted() {
+            TaskModel taskModel = itemTaskBinding.getModel();
             notifyItemRemoved(source.indexOf(taskModel));
             source.remove(taskModel);
-            itemTaskBinding.getViewModel().updateTaskModel(taskModel);
+            viewModel.updateTaskStatusCompleted(taskModel);
         }
     }
 }

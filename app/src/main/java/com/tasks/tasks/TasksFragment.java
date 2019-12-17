@@ -10,16 +10,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.tasks.R;
-import com.tasks.base.BaseFragment;
+import com.tasks._base.BaseFragment;
 import com.tasks.databinding.FragmentTasksBinding;
 import com.tasks.tasks.viewmodel.TasksViewModel;
 
-import static com.tasks.utils.RecyclerViewItemAnimatorUtil.dissallowChangeAnimations;
+import static com.tasks._utils.RecyclerViewItemAnimatorUtil.dissallowChangeAnimations;
 
 /**
  * Author: murphy

@@ -15,14 +15,14 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tasks.R;
 import com.tasks.databinding.FragmentTaskAddBinding;
-import com.tasks.utils.SpaceItemDecoration;
-import com.tasks.utils.TaskDateRangeLimiter;
+import com.tasks._utils.SpaceItemDecoration;
+import com.tasks._utils.TaskDateRangeLimiter;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import io.reactivex.disposables.Disposable;
 
-import static com.tasks.utils.UnitUtil.dp2px;
+import static com.tasks._utils.UnitUtil.dp2px;
 
 /**
  * Author: murphy
@@ -95,7 +95,7 @@ public class AddTaskBottomDialogFragment extends BottomSheetDialogFragment {
         dismiss();
 
         if (requireActivity() instanceof OnAddTaskListener) {
-            ((OnAddTaskListener) requireActivity()).onTaskAdded("Work");
+            ((OnAddTaskListener) requireActivity()).onTaskAdded(addTaskViewModel.getTaskCategory());
         }
     }
 

@@ -3,19 +3,17 @@ package com.tasks.taskadd;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks._dagger.base.DaggerViewModel;
 import com.tasks.data.model.CategoryModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.repository.TasksRepository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -81,6 +79,10 @@ public class AddTaskViewModel extends DaggerViewModel {
 
     public void setTaskCategory(String category) {
         taskModel.setCategory(category);
+    }
+
+    public String getTaskCategory() {
+        return taskModel.getCategory();
     }
 
     public Completable getAddTaskEvent() {

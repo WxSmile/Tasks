@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.databinding.ItemCategoryStatusBinding;
 import com.tasks.tasks.viewmodel.TasksViewModel;
-import com.tasks.utils.BindableInterface;
-import com.tasks.utils.CircleRevealHepler;
+import com.tasks._utils.BindableInterface;
+import com.tasks._utils.CircleRevealHepler;
 
 import java.util.List;
 

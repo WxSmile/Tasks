@@ -15,6 +15,7 @@ import com.tasks.data.util.DateUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class LocalTasksDataSource implements TasksDataSource {
     }
 
     private Map<String, List<TaskModel>> getCategoryTasks(List<TaskModel> taskModels) {
-        Map<String, List<TaskModel>> tasksGroupByDate = new HashMap<>();
+        Map<String, List<TaskModel>> tasksGroupByDate = new LinkedHashMap<>();
 
         for (TaskModel taskModel : taskModels) {
             Date date = taskModel.getDate();

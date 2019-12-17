@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.tasks.data.model.TaskModel" />
+
+        <import type="com.tasks.tasks.HotTasksAdapter" />
+
+        <variable
+            name="model"
+            type="TaskModel" />
+
+        <variable
+            name="viewHolder"
+            type="com.tasks.tasks.HotTasksAdapter.HotTaskViewHolder" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bacground_task_item"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{()->viewHolder.onHotTaskItemClicked(model)}"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <RadioButton
+            android:id="@+id/rb_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@null"
+            android:checked="@{model.completed}"
+            android:clickable="false"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:text="@{model.name}"
+            android:textColor="#1e1e1e"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_date"
+            app:layout_constraintLeft_toRightOf="@+id/rb_status"
+            app:layout_constraintTop_toTopOf="@+id/rb_status"
+            tools:text="Search Refrence" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:text="@string/today_at"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name"
+            tools:text="Today at" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            app:hot_task_time="@{model.date}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+            app:layout_constraintLeft_toRightOf="@+id/tv_date"
+            app:layout_constraintTop_toTopOf="@+id/tv_date"
+            tools:text="PM 11:00" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

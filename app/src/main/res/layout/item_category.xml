@@ -9,8 +9,6 @@
 
         <import type="com.tasks.taskadd.CategoryAdapter.CategoryViewHolder" />
 
-        <import type="com.tasks.taskadd.AddTaskViewModel" />
-
         <variable
             name="model"
             type="CategoryModelWrapper" />
@@ -18,10 +16,6 @@
         <variable
             name="viewHolder"
             type="CategoryViewHolder" />
-
-        <variable
-            name="viewModel"
-            type="AddTaskViewModel" />
 
     </data>
 

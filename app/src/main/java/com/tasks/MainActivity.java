@@ -7,17 +7,17 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.tasks.base.BaseActivity;
-import com.tasks.dagger.component.TasksComponent;
+import com.tasks._base.BaseActivity;
+import com.tasks._dagger.component.TasksComponent;
+import com.tasks.categorydetail.CategoryDetailViewModel;
 import com.tasks.databinding.ActivityMainBinding;
 import com.tasks.taskadd.AddTaskBottomDialogFragment;
 import com.tasks.taskadd.AddTaskViewModel;
-import com.tasks.taskdetail.TaskDetailFragment;
-import com.tasks.taskdetail.TaskDetailViewModel;
+import com.tasks.categorydetail.CategoryDetailFragment;
 import com.tasks.tasks.TasksFragment;
 import com.tasks.tasks.viewmodel.TasksViewModel;
-import com.tasks.utils.CircleRevealHepler;
-import com.tasks.utils.MainCallback;
+import com.tasks._utils.CircleRevealHepler;
+import com.tasks._utils.MainCallback;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity implements MainCallback {
     @Inject
     TasksViewModel tasksViewModel;
     @Inject
-    TaskDetailViewModel taskDetailViewModel;
+    CategoryDetailViewModel categoryDetailViewModel;
     @Inject
     AddTaskViewModel addTaskViewModel;
 
@@ -60,8 +60,8 @@ public class MainActivity extends BaseActivity implements MainCallback {
 
     @Override
     public void onTaskAdded(String taskCategory) {
-        TaskDetailFragment taskDetailFragment = taskDetailFragmentIsLastElementInBackStack();
-        if (taskDetailFragment == null) {
+        CategoryDetailFragment categoryDetailFragment = taskDetailFragmentIsLastElementInBackStack();
+        if (categoryDetailFragment == null) {
             CircleRevealHepler circleRevealHepler = new CircleRevealHepler();
             circleRevealHepler.setCenterView(dataBinding.fabAddTask);
             circleRevealHepler.setReferView(dataBinding.container);
@@ -76,18 +76,18 @@ public class MainActivity extends BaseActivity implements MainCallback {
     }
 
     private void showTaskDetailFragment(String taskCategory, CircleRevealHepler hepler) {
-        TaskDetailFragment taskDetailFragment = TaskDetailFragment.newInstance(taskCategory, hepler);
+        CategoryDetailFragment categoryDetailFragment = CategoryDetailFragment.newInstance(taskCategory, hepler);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, taskDetailFragment, TaskDetailFragment.class.getSimpleName())
-                .addToBackStack(TaskDetailFragment.class.getSimpleName())
+                .add(R.id.container, categoryDetailFragment, CategoryDetailFragment.class.getSimpleName())
+                .addToBackStack(CategoryDetailFragment.class.getSimpleName())
                 .commit();
     }
 
     @Override
     public void onBackPressed() {
-        TaskDetailFragment taskDetailFragment = taskDetailFragmentIsLastElementInBackStack();
-        if (taskDetailFragment != null) {
-            taskDetailFragment.hide();
+        CategoryDetailFragment categoryDetailFragment = taskDetailFragmentIsLastElementInBackStack();
+        if (categoryDetailFragment != null) {
+            categoryDetailFragment.hide();
             return;
         }
 
@@ -99,10 +99,10 @@ public class MainActivity extends BaseActivity implements MainCallback {
         super.onBackPressed();
     }
 
-    private TaskDetailFragment taskDetailFragmentIsLastElementInBackStack() {
+    private CategoryDetailFragment taskDetailFragmentIsLastElementInBackStack() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment fragment = supportFragmentManager.findFragmentByTag(TaskDetailFragment.class.getSimpleName());
-        return fragment instanceof TaskDetailFragment ? (TaskDetailFragment) fragment : null;
+        Fragment fragment = supportFragmentManager.findFragmentByTag(CategoryDetailFragment.class.getSimpleName());
+        return fragment instanceof CategoryDetailFragment ? (CategoryDetailFragment) fragment : null;
     }
 
     public boolean hasOnlyOneElementInBackStack() {

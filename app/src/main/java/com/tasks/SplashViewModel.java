@@ -2,7 +2,7 @@ package com.tasks;
 
 import androidx.annotation.NonNull;
 
-import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks._dagger.base.DaggerViewModel;
 import com.tasks.data.repository.TasksRepository;
 
 import java.util.ArrayList;

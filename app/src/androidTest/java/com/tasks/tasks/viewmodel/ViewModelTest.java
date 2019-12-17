@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.test.core.app.ApplicationProvider;
 
+import com.tasks.categorydetail.CategoryDetailViewModel;
 import com.tasks.data.dagger.DaggerDataComponent;
 import com.tasks.data.dagger.DataComponent;
 import com.tasks.data.dagger.module.DataModule;
@@ -12,7 +13,6 @@ import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.repository.TasksRepository;
 import com.tasks.data.util.DateUtils;
-import com.tasks.taskdetail.TaskDetailViewModel;
 import com.tasks.tasks.TestUtil;
 
 import org.junit.After;
@@ -38,7 +38,7 @@ public class ViewModelTest {
     private List<TaskModel> taskModels;
 
     private TasksViewModel tasksViewModel;
-    private TaskDetailViewModel taskDetailViewModel;
+    private CategoryDetailViewModel categoryDetailViewModel;
     private TasksRepository testTaskRepository;
 
     @Before
@@ -49,7 +49,7 @@ public class ViewModelTest {
                 .build();
         testTaskRepository = dataComponent.makeTestTaskRepository();
         tasksViewModel = new TasksViewModel(testTaskRepository);
-        taskDetailViewModel = new TaskDetailViewModel(testTaskRepository);
+        categoryDetailViewModel = new CategoryDetailViewModel(testTaskRepository);
 
         assertThat(tasksViewModel).isNotNull();
 
@@ -88,28 +88,28 @@ public class ViewModelTest {
 
     @Test
     public void tasksDetailViewModel_getCategoryTasksAndStatus_addTask_markTask_deleteTask() throws Exception {
-        assertThat(taskDetailViewModel.categoryTasksEvent).isNull();
-        assertThat(taskDetailViewModel.categoryStatusEvent).isNull();
+        assertThat(categoryDetailViewModel.categoryTasksEvent).isNull();
+        assertThat(categoryDetailViewModel.categoryStatusEvent).isNull();
 
-        taskDetailViewModel.setCategory("work");
+        categoryDetailViewModel.setCategory("work");
 
-        taskDetailViewModel.fetchCategoryStatus();
-        taskDetailViewModel.fetchCategoryTasks();
+        categoryDetailViewModel.fetchCategoryStatus();
+        categoryDetailViewModel.fetchCategoryTasks();
 
-        CategoryStatusModel categoryStatus = getValue(taskDetailViewModel.categoryStatusEvent);
+        CategoryStatusModel categoryStatus = getValue(categoryDetailViewModel.categoryStatusEvent);
         assertThat(categoryStatus).isNull();
-        assertThat(getValue(taskDetailViewModel.categoryTasksEvent)).hasSize(0);
+        assertThat(getValue(categoryDetailViewModel.categoryTasksEvent)).hasSize(0);
 
         insertTasks();
 
-        categoryStatus = getValue(taskDetailViewModel.categoryStatusEvent);
+        categoryStatus = getValue(categoryDetailViewModel.categoryStatusEvent);
 
-        assertThat(categoryStatus.getCategory()).isEqualTo(taskDetailViewModel.getCategory());
+        assertThat(categoryStatus.getCategory()).isEqualTo(categoryDetailViewModel.getCategory());
         assertThat(categoryStatus.getTotal()).isEqualTo(4);
         assertThat(categoryStatus.getNotCompletedCount()).isEqualTo(3);
         assertThat(categoryStatus.getCompletedCount()).isEqualTo(1);
 
-        Map<String, List<TaskModel>> categoryTasks = getValue(taskDetailViewModel.categoryTasksEvent);
+        Map<String, List<TaskModel>> categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
         assertThat(categoryTasks).hasSize(2);
 
         String hotTaskGroup = DateUtils.getDateFormate(TestUtil.getHotDate());
@@ -122,11 +122,11 @@ public class ViewModelTest {
 
         TaskModel taskModel = taskModels.get(0);
 
-        taskDetailViewModel.markTaskStatus(taskModel.getName(), !taskModel.isCompleted());
+        categoryDetailViewModel.markTaskStatus(taskModel.getName(), !taskModel.isCompleted());
 
-        taskDetailViewModel.updateTaskStatusEvent.test().assertComplete();
+        categoryDetailViewModel.updateTaskStatusEvent.test().assertComplete();
 
-        categoryTasks = getValue(taskDetailViewModel.categoryTasksEvent);
+        categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
         taskModels = categoryTasks.get(hotTaskGroup);
 
         assertThat(taskModels).isNotNull();
@@ -136,11 +136,11 @@ public class ViewModelTest {
         assertThat(markedTaskModel.getDate()).isEqualTo(taskModel.getDate());
         assertThat(markedTaskModel.isCompleted()).isEqualTo(!taskModel.isCompleted());
 
-        taskDetailViewModel.deleteTask(markedTaskModel.getName(), markedTaskModel.getDescribe());
+        categoryDetailViewModel.deleteTask(markedTaskModel);
 
-        taskDetailViewModel.deleteTaskEvent.test().assertComplete();
+        categoryDetailViewModel.deleteTaskEvent.test().assertComplete();
 
-        categoryTasks = getValue(taskDetailViewModel.categoryTasksEvent);
+        categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
         String markTaskDateGroup = DateUtils.getDateFormate(markedTaskModel.getDate());
         taskModels = categoryTasks.get(markTaskDateGroup);
 

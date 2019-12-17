@@ -37,7 +37,7 @@ public abstract class TaskDao {
     @Query("SELECT name, describe, category, date, completed FROM Tasks")
     public abstract LiveData<List<TaskModel>> getAllTasks();
 
-    @Query("SELECT name, describe, category, date, completed FROM Tasks WHERE category = :category AND date >= :oneTime order by date")
+    @Query("SELECT name, describe, category, date, completed FROM Tasks WHERE category = :category AND date >= :oneTime order by completed, date")
     public abstract LiveData<List<TaskModel>> getCategoryTasksAfterOneTimestamp(String category, Date oneTime);
 
     @Query("DELETE FROM tasks WHERE name = :name AND describe = :describe")

@@ -8,4 +8,8 @@
     <string name="hint_your_task_name">Your task name</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
+    <string name="today_at">Today at</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="no_tasks">No Tasks!</string>
 </resources>

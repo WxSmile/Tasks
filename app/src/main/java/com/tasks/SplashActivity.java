@@ -3,13 +3,11 @@ package com.tasks;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.tasks.base.BaseActivity;
-import com.tasks.dagger.component.TasksComponent;
+import com.tasks._base.BaseActivity;
+import com.tasks._dagger.component.TasksComponent;
 
 import javax.inject.Inject;
 
@@ -17,9 +15,6 @@ import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.internal.disposables.DisposableContainer;
 import io.reactivex.schedulers.Schedulers;
 
 /**

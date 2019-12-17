@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tasks.R;
 import com.tasks.databinding.ItemCategoryBinding;
-import com.tasks.utils.BindableInterface;
+import com.tasks._utils.BindableInterface;
 
 import java.util.List;
 
@@ -66,7 +66,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         public void onCategtoryItemClick(CategoryModelWrapper categoryModel) {
-
 
             categoryModel.setSelect(!categoryModel.isSelect());
             if (!categoryModel.isSelect()) {

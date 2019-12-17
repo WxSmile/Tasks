@@ -3,7 +3,7 @@ package com.tasks.tasks.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
-import com.tasks.dagger.base.DaggerViewModel;
+import com.tasks._dagger.base.DaggerViewModel;
 import com.tasks.data.model.CategoryStatusModel;
 import com.tasks.data.model.TaskModel;
 import com.tasks.data.repository.TasksRepository;
@@ -39,7 +39,7 @@ public class TasksViewModel extends DaggerViewModel {
         hotTasksEvent = repository.getHotTasks();
     }
 
-    public void updateTaskModel(TaskModel model) {
+    public void updateTaskStatusCompleted(TaskModel model) {
         Completable updateHotTaskCompletedEvent = repository.updateTask(model.getName(), true);
         Disposable disposable = updateHotTaskCompletedEvent
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

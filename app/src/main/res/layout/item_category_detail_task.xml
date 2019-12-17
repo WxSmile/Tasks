@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.tasks.data.model.TaskModel" />
+
+        <import type="com.tasks.categorydetail.TaskModelSection.ItemViewHolder" />
+
+
+        <variable
+            name="model"
+            type="TaskModel" />
+
+        <variable
+            name="viewHolder"
+            type="ItemViewHolder" />
+
+    </data>
+
+    <com.tasks.widget.SwipeRevealLayout
+        android:id="@+id/srl_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dragFromEdge="right">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()->viewHolder.onDeleteClicked(model)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="10dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bacground_task_item"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()->viewHolder.onItemClicled(model)}"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="15dp">
+
+                <RadioButton
+                    android:id="@+id/rb_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:checked="@{model.completed}"
+                    android:clickable="false"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@{model.name}"
+                    android:textColor="#1e1e1e"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_date"
+                    app:layout_constraintLeft_toRightOf="@+id/rb_status"
+                    app:layout_constraintTop_toTopOf="@+id/rb_status"
+                    tools:text="Search Refrence" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp"
+                    app:category_task_date="@{model.date}"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_name"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    tools:text="Today at" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    app:hot_task_time="@{model.date}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_date"
+                    app:layout_constraintTop_toTopOf="@+id/tv_date"
+                    tools:text="PM 11:00" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </com.tasks.widget.SwipeRevealLayout>
+</layout>

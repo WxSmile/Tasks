@@ -6,15 +6,19 @@
     <data>
 
         <import type="com.tasks.data.model.CategoryStatusModel" />
+
         <import type="com.tasks.tasks.viewmodel.TasksViewModel" />
-        <import type="com.tasks.tasks.AllCategoryStatusAdapter.CategoryStatusViewHolder"/>
+
+        <import type="com.tasks.tasks.AllCategoryStatusAdapter.CategoryStatusViewHolder" />
 
         <variable
             name="model"
             type="CategoryStatusModel" />
+
         <variable
             name="viewModel"
             type="TasksViewModel" />
+
         <variable
             name="viewHolder"
             type="CategoryStatusViewHolder" />
@@ -24,31 +28,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:clickable="true"
+        android:focusable="true"
         android:paddingStart="5dp"
         android:paddingTop="20dp"
         android:paddingEnd="5dp"
-        android:clickable="true"
-        android:focusable="true"
         android:paddingBottom="20dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="3dp"
             app:cardCornerRadius="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="40dp"
+                android:background="@drawable/bacground_task_item"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->viewHolder.onCategoryStatusItemClicked(model)}"
-                android:background="@drawable/bacground_task_item"
-                android:paddingBottom="40dp"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingTop="40dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="40dp">
 
                 <TextView
                     android:id="@+id/textView"
@@ -66,8 +71,8 @@
                     android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:category_status_text="@{model}"
                     android:textSize="14sp"
+                    app:category_status_text="@{model}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
