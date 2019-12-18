@@ -24,6 +24,13 @@ A todo tasks application practice.
 
 # future
 
+- function of category manage
 - kotlin implement
+
+# apk
+
+![download](../../app/release/app-release.apk)
+
+
 
 
