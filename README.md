@@ -29,7 +29,8 @@ A todo tasks application practice.
 
 # apk
 
-![download](../../app/release/app-release.apk)
+[download](https://github.com/WxSmile/Tasks/raw/master/app/release/app-release.apk)
+
 
 
 
