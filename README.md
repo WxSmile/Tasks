@@ -22,7 +22,7 @@ A todo tasks application practice.
 - mvvm.
 - clean.
 
-# feature
+# future
 
 - kotlin implement
 
