@@ -3,6 +3,7 @@ package com.tasks.tasks.viewmodel;
 import android.app.Application;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
 import androidx.test.core.app.ApplicationProvider;
 
 import com.tasks.categorydetail.CategoryDetailViewModel;
@@ -77,7 +78,8 @@ public class ViewModelTest {
 
         List<CategoryStatusModel> value = getValue(tasksViewModel.allCategoryStatusEvent);
         assertThat(value).hasSize(3);
-        assertThat(value.get(0).getTotal()).isEqualTo(0);
+        assertThat(value.get(0).getCompletedCount()).isEqualTo(0);
+        assertThat(value.get(0).getNotCompletedCount()).isEqualTo(0);
         assertThat(getValue(tasksViewModel.hotTasksEvent)).hasSize(0);
 
         insertTasks();
@@ -88,28 +90,25 @@ public class ViewModelTest {
 
     @Test
     public void tasksDetailViewModel_getCategoryTasksAndStatus_addTask_markTask_deleteTask() throws Exception {
-        assertThat(categoryDetailViewModel.categoryTasksEvent).isNull();
-        assertThat(categoryDetailViewModel.categoryStatusEvent).isNull();
+        assertThat(categoryDetailViewModel.getCategoryTasksEvent()).isNull();
+        assertThat(categoryDetailViewModel.getCategoryStatusEvent()).isNull();
 
         categoryDetailViewModel.setCategory("work");
 
         categoryDetailViewModel.fetchCategoryStatus();
         categoryDetailViewModel.fetchCategoryTasks();
 
-        CategoryStatusModel categoryStatus = getValue(categoryDetailViewModel.categoryStatusEvent);
-        assertThat(categoryStatus).isNull();
-        assertThat(getValue(categoryDetailViewModel.categoryTasksEvent)).hasSize(0);
-
         insertTasks();
 
-        categoryStatus = getValue(categoryDetailViewModel.categoryStatusEvent);
+        CategoryStatusModel categoryStatus = getValue(categoryDetailViewModel.getCategoryStatusEvent());
 
         assertThat(categoryStatus.getCategory()).isEqualTo(categoryDetailViewModel.getCategory());
-        assertThat(categoryStatus.getTotal()).isEqualTo(4);
+        int total = categoryStatus.getNotCompletedCount() + categoryStatus.getCompletedCount();
+        assertThat(total).isEqualTo(4);
         assertThat(categoryStatus.getNotCompletedCount()).isEqualTo(3);
         assertThat(categoryStatus.getCompletedCount()).isEqualTo(1);
 
-        Map<String, List<TaskModel>> categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
+        Map<String, List<TaskModel>> categoryTasks = getValue(categoryDetailViewModel.getCategoryTasksEvent());
         assertThat(categoryTasks).hasSize(2);
 
         String hotTaskGroup = DateUtils.getDateFormate(TestUtil.getHotDate());
@@ -126,12 +125,20 @@ public class ViewModelTest {
 
         categoryDetailViewModel.updateTaskStatusEvent.test().assertComplete();
 
-        categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
+        categoryTasks = getValue(categoryDetailViewModel.getCategoryTasksEvent());
         taskModels = categoryTasks.get(hotTaskGroup);
 
         assertThat(taskModels).isNotNull();
-        TaskModel markedTaskModel = taskModels.get(0);
 
+        TaskModel markedTaskModel = null;
+        for (TaskModel model : taskModels) {
+            if (model.getName().equals(taskModel.getName())) {
+                markedTaskModel = model;
+                break;
+            }
+        }
+
+        assertThat(markedTaskModel).isNotNull();
         assertThat(markedTaskModel.getName()).isEqualTo(taskModel.getName());
         assertThat(markedTaskModel.getDate()).isEqualTo(taskModel.getDate());
         assertThat(markedTaskModel.isCompleted()).isEqualTo(!taskModel.isCompleted());
@@ -140,7 +147,7 @@ public class ViewModelTest {
 
         categoryDetailViewModel.deleteTaskEvent.test().assertComplete();
 
-        categoryTasks = getValue(categoryDetailViewModel.categoryTasksEvent);
+        categoryTasks = getValue(categoryDetailViewModel.getCategoryTasksEvent());
         String markTaskDateGroup = DateUtils.getDateFormate(markedTaskModel.getDate());
         taskModels = categoryTasks.get(markTaskDateGroup);
 

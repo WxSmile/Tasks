@@ -74,7 +74,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_menu"
-            app:title="@string/app_name"
+            app:title="@string/title"
             app:titleTextColor="@android:color/white" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
