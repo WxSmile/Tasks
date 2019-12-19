@@ -27,20 +27,23 @@
         app:dragFromEdge="right">
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/fl_delete"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:paddingEnd="25dp"
-            android:paddingStart="20dp"
-            android:background="@android:color/transparent">
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{()->viewHolder.onDeleteClicked(model)}">
 
             <ImageView
                 android:id="@+id/iv_delete"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_gravity="center"
                 android:onClick="@{()->viewHolder.onDeleteClicked(model)}"
+                android:padding="20dp"
                 android:src="@drawable/ic_delete" />
 
         </FrameLayout>
