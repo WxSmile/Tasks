@@ -22,11 +22,6 @@ A todo tasks application practice.
 - mvvm.
 - clean.
 
-# future
-
-- function of category manage
-- kotlin implement
-
 # apk
 
 [download](https://github.com/WxSmile/Tasks/raw/master/app/release/app-release.apk)
